@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario a Webhook</title>
+</head>
+<body>
+  <h2>Formulario de Contacto</h2>
+  <form id="miFormulario">
+    <label>Nombre:</label>
+    <input type="text" name="nombre" required><br><br>
+
+    <label>Correo:</label>
+    <input type="email" name="correo" required><br><br>
+
+     <label>cel:</label>
+    <input type="number" name="cel" required><br><br>
+
+    <label>Mensaje:</label><br>
+    <textarea name="mensaje" required></textarea><br><br>
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <script>
+    const formulario = document.getElementById('miFormulario');
+
+    formulario.addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevenir que recargue la página
+
+      // Capturar los datos del formulario
+      const datos = new FormData(formulario);
+      const objeto = {};
+      datos.forEach((valor, clave) => {
+        objeto[clave] = valor;
+      });
+
+      // Enviar al webhook
+      fetch('https://whatsapp-n8n.b0qnpr.easypanel.host/webhook-test/411c87f2-70af-4123-ad4e-81e1d596f3dd', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(objeto)
+      })
+      .then(respuesta => {
+        if (!respuesta.ok) throw new Error("Error al enviar datos");
+        return respuesta.text();
+      })
+      .then(data => {
+        alert('Datos enviados correctamente ✅');
+        formulario.reset();
+      })
+      .catch(error => {
+        alert('Error al enviar datos ❌');
+        console.error(error);
+      });
+    });
+  </script>
+</body>
+</html>
